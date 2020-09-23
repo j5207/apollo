@@ -91,9 +91,11 @@ void AsyncLogger::RunThread() {
     while (flag_.test_and_set(std::memory_order_acquire)) {
       cpu_relax();
     }
+    // flush now is active, active is flush, but flush should be empty
     active_buf_.swap(flushing_buf_);
     flag_.clear(std::memory_order_release);
     FlushBuffer(flushing_buf_);
+    // why is that??
     if (active_buf_->size() < 800) {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }

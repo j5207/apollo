@@ -69,6 +69,7 @@ CRoutine::CRoutine(const std::function<void()> &func) : func_(func) {
 CRoutine::~CRoutine() { context_ = nullptr; }
 
 RoutineState CRoutine::Resume() {
+  // unlikely force stop is true
   if (cyber_unlikely(force_stop_)) {
     state_ = RoutineState::FINISHED;
     return state_;
@@ -80,6 +81,7 @@ RoutineState CRoutine::Resume() {
   }
 
   current_routine_ = this;
+  // when resume, swap main stack back to current stack
   SwapContext(GetMainStack(), GetStack());
   current_routine_ = nullptr;
   return state_;

@@ -125,6 +125,7 @@ class CRoutine {
 inline void CRoutine::Yield(const RoutineState &state) {
   auto routine = GetCurrentRoutine();
   routine->set_state(state);
+  // when yield, swap current stack to main stack
   SwapContext(GetCurrentRoutine()->GetStack(), GetMainStack());
 }
 
